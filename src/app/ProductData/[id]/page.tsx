@@ -1,9 +1,10 @@
-// pages/product/[id]/page.tsx
 "use client";
 
 import { client } from '@/sanity/lib/client';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useDispatch } from 'react-redux';
+import { add } from '@/redux/cartslice';
 
 interface IProduct {
   _id: string;
@@ -15,34 +16,54 @@ interface IProduct {
   description: string;
 }
 
-const ProductPage = ({ params }: { params: { id: string } }) => {
+const ProductPage: React.FC<{ params: { id: string } }> = ({ params }) => {
   const [product, setProduct] = useState<IProduct | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(true);
+  const dispatch = useDispatch();
 
-  // Fetch product data on the client side
   useEffect(() => {
+    if (!params.id) return;
+
     const fetchProduct = async () => {
-      const fetchedProduct: IProduct[] = await client.fetch(
-        `*[_type == "product" && _id == "${params.id}"]{
-          _id,
-          name,
-          price,
-          discountPercentage,
-          tags,
-          "imageUrl": image.asset->url,
-          description
-        }`
-      );
-      setProduct(fetchedProduct[0]);
+      try {
+        setLoading(true);
+        const fetchedProduct: IProduct[] = await client.fetch(
+          `*[_type == "product" && _id == $id]{
+            _id,
+            name,
+            price,
+            discountPercentage,
+            tags,
+            "imageUrl": image.asset->url,
+            description
+          }`,
+          { id: params.id }
+        );
+
+        if (fetchedProduct.length > 0) {
+          setProduct(fetchedProduct[0]);
+        } else {
+          setProduct(null);
+        }
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchProduct();
   }, [params.id]);
 
+  if (loading) {
+    return <div className="text-center py-10">Loading...</div>;
+  }
+
   if (!product) {
-    return <div>Loading...</div>; // Loading state
+    return <div className="text-center py-10 text-red-500">Product not found.</div>;
   }
 
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
@@ -56,14 +77,16 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
         <div className="relative lg:w-1/2 mb-6 lg:mb-0">
           <Image
             src={product.imageUrl}
-            alt={product.name || 'Product image'}
+            alt={product.name}
             height={500}
             width={500}
-            className="rounded-md"
+            className="rounded-md object-cover"
+            priority
           />
         </div>
+
         {/* Product details section */}
-        <div className="relative lg:w-1/2 mb-6 lg:mb-0">
+        <div className="relative lg:w-1/2">
           <p className="text-lg font-semibold mb-2">Price: ${product.price}</p>
           <p className="text-sm text-gray-500 mb-2">Discount: {product.discountPercentage}%</p>
           <p className="text-sm text-gray-500 mb-2 font-bold">Tags: {product.tags}</p>
@@ -126,7 +149,10 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
             </div>
           </div>
 
-          <button className="mt-4 bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition-colors">
+          <button
+            onClick={() => dispatch(add(product))}
+            className="mt-4 bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition-colors"
+          >
             Add to Cart
           </button>
 

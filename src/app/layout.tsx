@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar"; // Import Navbar component
+import ReduxProvider from "@/components/reduxprovider";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +30,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+       <ReduxProvider>
+        <Navbar /> {/* Navbar Added Here */}
         {children}
+        </ReduxProvider>
+        
       </body>
     </html>
   );
