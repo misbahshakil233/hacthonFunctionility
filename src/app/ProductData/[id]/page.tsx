@@ -5,6 +5,10 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 import { add } from '@/redux/cartslice';
+import { toast, ToastContainer } from 'react-toastify'; // Import toast and ToastContainer
+
+// Import react-toastify CSS
+import 'react-toastify/dist/ReactToastify.css';
 
 interface IProduct {
   _id: string;
@@ -16,7 +20,13 @@ interface IProduct {
   description: string;
 }
 
-const ProductPage: React.FC<{ params: { id: string } }> = ({ params }) => {
+interface ProductPageProps {
+  params: {
+    id: string;
+  };
+}
+
+const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
   const [product, setProduct] = useState<IProduct | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
@@ -69,6 +79,11 @@ const ProductPage: React.FC<{ params: { id: string } }> = ({ params }) => {
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
   const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
+  const handleAddToCart = () => {
+    dispatch(add(product));
+    toast.success(`${product.name} has been added to your cart!`); // Display the toast notification
+  };
+
   return (
     <div className="container mx-auto py-10 px-4">
       <h1 className="text-4xl font-bold text-center mb-10">{product.name}</h1>
@@ -100,9 +115,7 @@ const ProductPage: React.FC<{ params: { id: string } }> = ({ params }) => {
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
-                  className={`px-4 py-2 rounded-md border-2 ${
-                    selectedSize === size ? 'border-blue-500 bg-blue-100' : 'border-gray-300'
-                  }`}
+                  className={`px-4 py-2 rounded-md border-2 ${selectedSize === size ? 'border-blue-500 bg-blue-100' : 'border-gray-300'}`}
                 >
                   {size}
                 </button>
@@ -119,9 +132,7 @@ const ProductPage: React.FC<{ params: { id: string } }> = ({ params }) => {
                 <button
                   key={color}
                   onClick={() => setSelectedColor(color)}
-                  className={`w-10 h-10 rounded-full border-2 ${
-                    selectedColor === color ? 'border-blue-500' : 'border-gray-300'
-                  }`}
+                  className={`w-10 h-10 rounded-full border-2 ${selectedColor === color ? 'border-blue-500' : 'border-gray-300'}`}
                   style={{ backgroundColor: color }}
                 ></button>
               ))}
@@ -150,7 +161,7 @@ const ProductPage: React.FC<{ params: { id: string } }> = ({ params }) => {
           </div>
 
           <button
-            onClick={() => dispatch(add(product))}
+            onClick={handleAddToCart} // Call handleAddToCart to dispatch and show toast
             className="mt-4 bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition-colors"
           >
             Add to Cart
@@ -160,6 +171,9 @@ const ProductPage: React.FC<{ params: { id: string } }> = ({ params }) => {
           <hr className="my-6 border-gray-300" />
         </div>
       </div>
+
+      {/* Toast Container */}
+      <ToastContainer /> {/* Ensure this is added to display toast notifications */}
     </div>
   );
 };
