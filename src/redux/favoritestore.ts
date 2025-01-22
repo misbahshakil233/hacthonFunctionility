@@ -1,12 +1,10 @@
-"use client";
+"use client"
 import { configureStore } from "@reduxjs/toolkit";
-import cartReducer from "../redux/cartslice";
 import favoritesReducer from "../redux/favoritesSlice";
 
 const store = configureStore({
   reducer: {
-    cart: cartReducer,
-    favourite: favoritesReducer,
+    Favourite: favoritesReducer,
   },
 });
 

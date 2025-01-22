@@ -3,12 +3,14 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { FiShoppingCart, FiUser, FiMenu, FiX, FiSearch } from "react-icons/fi";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store"; // Replace with the actual path to your store's RootState type
+import { RootState } from "../redux/store"; 
+import { FaRegHeart } from "react-icons/fa"; // 🤍 Outline Heart Icon
+ // Replace with the actual path to your store's RootState type
 
 const Navbar: React.FC = () => {
 
   const item = useSelector((state: RootState) => state.cart);
-
+  const item1 = useSelector((state: RootState) => state.favourite);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -56,6 +58,12 @@ const Navbar: React.FC = () => {
 
         {item.length}
         <FiUser className="text-2xl cursor-pointer" />
+
+        <Link href="/favorites" className=" text-white px-4 py-2 rounded-md flex items-center">
+  <FaRegHeart className="text-white" /> {/* 🤍 Transparent White Heart */}
+ 
+</Link>
+
       </div>
     </nav>
   );

@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { add } from '@/redux/cartslice';
 import { toast, ToastContainer } from 'react-toastify'; // Import toast and ToastContainer
 
-// Import react-toastify CSS
+
 import 'react-toastify/dist/ReactToastify.css';
 
 interface IProduct {
@@ -83,6 +83,7 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
     dispatch(add(product));
     toast.success(`${product.name} has been added to your cart!`); // Display the toast notification
   };
+  
 
   return (
     <div className="container mx-auto py-10 px-4">
