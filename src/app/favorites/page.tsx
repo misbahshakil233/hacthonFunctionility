@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { remove } from "@/redux/favoritesSlice"; // Correct action import
+import { remove } from "@/redux/favoritesSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import Image from "next/image";
@@ -16,17 +16,15 @@ interface FavouriteItem {
 
 const Favouritepage: React.FC = () => {
   const dispatch = useDispatch();
-
-  // Corrected the state reference to 'favourite' and variable name to 'favouriteItems'
-  const favouriteItems = useSelector((state: RootState) => state.favourite.favourites); // Fetching 'favourites' array from state
+  const favouriteItems = useSelector((state: RootState) => state.favourite.favourites);
 
   const handleRemove = (_id: string) => {
-    dispatch(remove(_id)); // Remove item from favourites
+    dispatch(remove(_id));
   };
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
-      <h3 className="text-3xl font-bold text-center mb-8">Your Favourite</h3>
+      <h3 className="text-3xl font-bold text-center mb-8">Your Favourites</h3>
 
       {/* Agar favourite list empty ho to ye message show hoga */}
       {favouriteItems.length === 0 ? (
@@ -35,40 +33,36 @@ const Favouritepage: React.FC = () => {
           <p>Please add items first.</p>
         </div>
       ) : (
-        <div>
-          <div className="space-y-6">
-            {favouriteItems.map((item: FavouriteItem) => (
-              <div
-                key={item._id}
-                className="flex items-center bg-white shadow-md rounded-lg p-4"
-              >
-                {/* Image Section */}
-                <div className="flex-shrink-0">
-                  <Image
-                    src={item.imageUrl}
-                    alt={item.name}
-                    height={150}
-                    width={150}
-                    className="rounded-md"
-                  />
-                </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {favouriteItems.map((item: FavouriteItem) => (
+            <div
+              key={item._id}
+              className="bg-white shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105"
+            >
+              {/* Image */}
+              <Image
+                src={item.imageUrl}
+                alt={item.name}
+                height={200}
+                width={300}
+                className="w-full h-48 object-cover"
+              />
 
-                {/* Content Section */}
-                <div className="ml-4 flex-grow">
-                  <h5 className="text-lg font-semibold text-gray-800">{item.name}</h5>
-                  <h5 className="text-lg font-medium text-gray-600 mt-2">${item.price}</h5>
-                </div>
+              {/* Content */}
+              <div className="p-4">
+                <h5 className="text-lg font-semibold text-gray-800">{item.name}</h5>
+                <h5 className="text-lg font-medium text-gray-600 mt-2">${item.price}</h5>
 
-                {/* Button Section */}
+                {/* Remove Button */}
                 <button
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
+                  className="w-full mt-4 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors"
                   onClick={() => handleRemove(item._id)}
                 >
                   Remove
                 </button>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       )}
     </div>

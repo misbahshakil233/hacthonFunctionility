@@ -6,9 +6,8 @@ import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 import { add } from '@/redux/cartslice';
 import { toast, ToastContainer } from 'react-toastify'; // Import toast and ToastContainer
-
-
 import 'react-toastify/dist/ReactToastify.css';
+import DetailBottom from './DetailBottom';
 
 interface IProduct {
   _id: string;
@@ -83,7 +82,6 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
     dispatch(add(product));
     toast.success(`${product.name} has been added to your cart!`); // Display the toast notification
   };
-  
 
   return (
     <div className="container mx-auto py-10 px-4">
@@ -175,8 +173,11 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
 
       {/* Toast Container */}
       <ToastContainer /> {/* Ensure this is added to display toast notifications */}
+
+      <DetailBottom />
     </div>
   );
 };
 
+// This is a workaround to resolve types in Next.js 13+ page components
 export default ProductPage;
