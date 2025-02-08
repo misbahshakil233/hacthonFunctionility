@@ -62,8 +62,9 @@ const Page = () => {
 
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.tags.toLowerCase().includes(searchQuery.toLowerCase())
+    (Array.isArray(product.tags) ? product.tags.join(" ").toLowerCase().includes(searchQuery.toLowerCase()) : product.tags.toLowerCase().includes(searchQuery.toLowerCase()))
   );
+  
 
   // Pagination logic
   const indexOfLastProduct = currentPage * productsPerPage;

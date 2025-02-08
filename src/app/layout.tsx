@@ -5,7 +5,13 @@ import Navbar from "@/components/Navbar"; // Import Navbar component
 import ReduxProvider from "@/components/reduxprovider";
 import TopHeader from "@/components/TopHeader";
 import Footer from "@/components/Footer";
-
+import {
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from '@clerk/nextjs';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,10 +34,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ClerkProvider>
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`} >
+       <header className="flex justify-between items-center px-6 py-4 bg-gray-100 shadow">
+            <h1 className="text-xl font-bold text-blue-700">My Website</h1>
+            <div className="flex items-center space-x-4">
+              <SignedOut>
+                <SignInButton>
+                  <button className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition">
+                    Sign In
+                  </button>
+                </SignInButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton
+                  appearance={{
+                    elements: {
+                      avatarBox: 'rounded-full border border-gray-300 shadow-md',
+                      userButtonOuter: 'p-1 hover:bg-gray-200 transition rounded-full',
+                    },
+                  }}
+                />
+              </SignedIn>
+            </div>
+          </header>
        <ReduxProvider>
         <TopHeader />
         <Navbar /> {/* Navbar Added Here */}
@@ -39,7 +67,9 @@ export default function RootLayout({
         <Footer />
         </ReduxProvider>
         
+        
       </body>
     </html>
+    </ClerkProvider>
   );
 }
