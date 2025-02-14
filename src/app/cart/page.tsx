@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { remove, setCart } from "@/redux/cartslice";
 import Image from "next/image";
+import Link from "next/link";
 
 const Cartpage: React.FC = () => {
   const dispatch = useDispatch();
@@ -58,9 +59,18 @@ const Cartpage: React.FC = () => {
 
           <div className="mt-10 p-6 bg-white shadow-lg rounded-lg text-center">
             <h4 className="text-2xl font-bold text-gray-800">Total Bill: ${totalBill.toFixed(2)}</h4>
-            <button className="mt-4 bg-green-500 text-white px-6 py-3 rounded text-lg font-semibold hover:bg-green-600 transition-colors">
-              Proceed to Checkout
-            </button>
+            <Link href={{
+  pathname: "/checkout",
+  query: { 
+    total: totalBill.toFixed(2), // ✅ Total Bill
+    products: JSON.stringify(cartItems.map(item => item.name)) // ✅ Products List
+  }
+}}>
+  <button className="mt-4 bg-green-500 text-white px-6 py-3 rounded text-lg font-semibold hover:bg-green-600 transition-colors">
+    Proceed to Checkout
+  </button>
+</Link>
+
           </div>
         </div>
       )}

@@ -2,7 +2,10 @@ import React from 'react'
 
 const Misbah = () => {
   return (
-    <div>Misbah</div>
+    <div>Misbah
+      4242 4242 4242 4242
+      4/44
+    </div>
   )
 }
 

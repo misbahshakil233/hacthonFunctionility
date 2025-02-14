@@ -10,10 +10,13 @@
     "import-data": "node scripts/importSanityData.mjs"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@reduxjs/toolkit": "^2.5.0",
     "@sanity/client": "^6.24.3",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.69.0",
+    "@stripe/react-stripe-js": "^3.1.1",
+    "@stripe/stripe-js": "^5.6.0",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "next": "15.1.4",
@@ -25,6 +28,7 @@
     "react-redux": "^9.2.0",
     "react-toastify": "^11.0.3",
     "sanity": "^3.69.0",
+    "stripe": "^17.6.0",
     "styled-components": "^6.1.14"
   },
   "devDependencies": {
