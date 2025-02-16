@@ -1,6 +1,6 @@
-"use client"; // ✅ Moved to the top
+"use client"; // ✅ Ensure this is at the top
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -10,9 +10,6 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
 
 export default function CheckoutPage() {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
-  const searchParams = useSearchParams();
-  const total = searchParams.get("total");
-  const products = searchParams.get("products");
 
   useEffect(() => {
     createPaymentIntent().then((res) => {
@@ -28,10 +25,21 @@ export default function CheckoutPage() {
     <div style={{ maxWidth: 400, margin: "0 auto" }}>
       <h1>Checkout</h1>
       <Elements stripe={stripePromise} options={{ clientSecret }}>
-        <PaymentForm total={total} products={products} />
+        {/* ✅ Wrap the search params in Suspense */}
+        <Suspense fallback={<div>Loading Checkout...</div>}>
+          <CheckoutContent />
+        </Suspense>
       </Elements>
     </div>
   );
+}
+
+function CheckoutContent() {
+  const searchParams = useSearchParams();
+  const total = searchParams.get("total");
+  const products = searchParams.get("products");
+
+  return <PaymentForm total={total} products={products} />;
 }
 
 interface PaymentFormProps {
@@ -62,7 +70,7 @@ function PaymentForm({ total, products }: PaymentFormProps) {
     } else {
       setErrorMessage(null);
       alert("Payment successful!");
-      
+
       // ✅ Correctly passing query parameters
       router.push(`/success?amount=${total}&products=${products}`);
 
